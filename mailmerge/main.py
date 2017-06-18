@@ -49,6 +49,8 @@ def sendmail(text, config_filename):
 
     # Parse message headers
     message = email.parser.Parser().parsestr(text)
+    charset = message.get_content_charset() or "ascii"
+    print(">>>   detected charset = {}".format(charset))
 
     # Connect to SMTP server
     if sendmail.security == "SSL/TLS":
@@ -67,15 +69,10 @@ def sendmail(text, config_filename):
     smtp.login(sendmail.username, sendmail.password)
 
     # Send message
-    try:
-        # Python 3.x
-        smtp.send_message(message)
-    except AttributeError:
-        # Python 2.7.x
-        smtp.sendmail(
+    smtp.sendmail(
             message["from"],
             message["to"],
-            message.as_string(),
+            message.as_string().encode(charset),
             )
     smtp.close()
 
@@ -93,6 +90,7 @@ def create_sample_input_files(template_filename,
             u"TO: {{email}}\n"
             u"SUBJECT: Testing mailmerge\n"
             u"FROM: My Self <myself@mydomain.com>\n"
+            u"CONTENT-TYPE: text/plain; charset=UTF-8\n"
             u"\n"
             u"Hi, {{name}},\n"
             u"\n"

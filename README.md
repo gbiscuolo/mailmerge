@@ -48,11 +48,17 @@ Take note that `TO`, `SUBJECT`, and `FROM` fields are required.  The remainder i
 TO: {{email}}
 SUBJECT: Testing mailmerge
 FROM: My Self <myself@mydomain.com>
+CONTENT-TYPE: text/plain; charset=UTF-8
 
 Hi, {{name}},
 
 Your number is {{number}}.
 ```
+
+#### Setting charset
+If no `charset` is provided in the `CONTENT-TYPE` (optional) header of the message template, the default `ascii` charset will be used for text encoding; if you provide text encoded in a charset not supported by the chosed one you will get an encoding error.
+
+For maximum text portability, it is suggested to use UTF-8 encoded message templates with a `CONTENT-TYPE: text/plain; charset=UTF-8` header, as provided by `mailmerge --sample` command.
 
 ### Edit the database `mailmerge_database.csv`
 Notice that the first line is a header that matches the parameters in the template example, for example, `{{email}}`.
